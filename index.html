@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +8,18 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors">
+<body class="bg-gray-50 min-h-screen">
     <div class="max-w-4xl mx-auto p-6">
         <!-- Header -->
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-900 dark:text-white"></i>
+                    <i data-lucide="shopping-cart" class="w-6 h-6 dark:text-white"></i>
                     <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Lazare Trackt</h1>
                 </div>
                 <div class="flex items-center gap-2">
@@ -33,7 +35,7 @@
                 </div>
             </div>
             <input type="file" id="csvInput" accept=".csv" class="hidden" onchange="app.importCSV(event)">
-
+            
             <!-- Budget Alert -->
             <div id="budgetAlert" class="hidden mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                 <div class="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
@@ -41,7 +43,7 @@
                     <span class="text-sm font-medium" id="budgetAlertText"></span>
                 </div>
             </div>
-
+            
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
@@ -65,7 +67,7 @@
             <!-- Budget Setter -->
             <div class="flex items-center gap-3">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Monthly Budget:</label>
-                <input type="number" id="budgetInput" placeholder="Set budget" step="0.01"
+                <input type="number" id="budgetInput" placeholder="Set budget" step="0.01" value=""
                     onchange="app.setBudget()"
                     class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 <span class="text-sm text-gray-600 dark:text-gray-400" id="budgetRemaining"></span>
@@ -81,8 +83,10 @@
         <!-- Search and Filter -->
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                <input type="text" id="searchInput" placeholder="Search items..." oninput="app.applyFilters()"
+                <input type="text" id="searchInput" placeholder="Search items..." 
+                    oninput="app.applyFilters()"
                     class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                
                 <select id="categoryFilter" onchange="app.applyFilters()" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     <option value="">All Categories</option>
                     <option>Entertainment</option>
@@ -92,12 +96,30 @@
                     <option>Shopping</option>
                     <option>Other</option>
                 </select>
+
                 <select id="sortBy" onchange="app.applyFilters()" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     <option value="name">Sort by Name</option>
                     <option value="amount-high">Amount (High to Low)</option>
                     <option value="amount-low">Amount (Low to High)</option>
                     <option value="day">Day of Month</option>
                 </select>
+            </div>
+            
+            <!-- Bulk Actions Bar -->
+            <div id="bulkActionsBar" class="hidden pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                        <span id="selectedCount">0</span> items selected
+                    </span>
+                    <div class="flex gap-2">
+                        <button onclick="app.bulkDelete()" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
+                            Delete Selected
+                        </button>
+                        <button onclick="app.clearSelection()" class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">
+                            Clear
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -106,26 +128,45 @@
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Spending by Category</h2>
                 <div class="flex gap-2">
-                    <button onclick="app.setChartType('bar')" id="barChartBtn" class="px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded">Bar</button>
-                    <button onclick="app.setChartType('pie')" id="pieChartBtn" class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">Pie</button>
+                    <button onclick="app.setChartType('bar')" id="barChartBtn" class="px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded">
+                        Bar
+                    </button>
+                    <button onclick="app.setChartType('pie')" id="pieChartBtn" class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
+                        Pie
+                    </button>
                 </div>
             </div>
-            <canvas id="categoryChart" height="200"></canvas>
+            <canvas id="categoryChart" width="400" height="200"></canvas>
         </div>
 
         <!-- Dashboard Widgets -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Most Expensive Items -->
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 5 Most Expensive</h2>
                 <div id="topExpensiveItems" class="space-y-3"></div>
             </div>
+
+            <!-- Spending Forecast -->
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Next Month Forecast</h2>
-                <div class="space-y-3">
-                    <div class="flex justify-between"><span class="text-sm text-gray-600 dark:text-gray-400">Recurring Charges</span><span id="forecastRecurring" class="font-semibold">$0.00</span></div>
-                    <div class="flex justify-between"><span class="text-sm text-gray-600 dark:text-gray-400">Predicted One-Time (avg)</span><span id="forecastOneTime" class="font-semibold">$0.00</span></div>
-                    <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between"><span class="font-medium">Total Forecast</span><span id="forecastTotal" class="text-xl font-bold">$0.00</span></div>
+                <div id="forecastWidget">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Recurring Charges</span>
+                            <span class="font-semibold text-gray-900 dark:text-white" id="forecastRecurring">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Predicted One-Time</span>
+                            <span class="font-semibold text-gray-900 dark:text-white" id="forecastOneTime">$0.00</span>
+                        </div>
+                        <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Forecast</span>
+                                <span class="text-xl font-bold text-gray-900 dark:text-white" id="forecastTotal">$0.00</span>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2" id="forecastNote"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,39 +176,48 @@
         <div id="exportMenu" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6 hidden">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Export Data</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button onclick="app.exportCSV()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300">
-                    <i data-lucide="file-text" class="w-4 h-4"></i><span class="text-sm">CSV</span>
+                <button onclick="app.exportCSV()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span class="text-sm">CSV</span>
                 </button>
-                <button onclick="app.exportJSON()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300">
-                    <i data-lucide="code" class="w-4 h-4"></i><span class="text-sm">JSON</span>
+                <button onclick="app.exportJSON()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                    <i data-lucide="code" class="w-4 h-4"></i>
+                    <span class="text-sm">JSON</span>
                 </button>
-                <button onclick="app.exportPDF('monthly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300">
-                    <i data-lucide="file-text" class="w-4 h-4"></i><span class="text-sm">Monthly PDF</span>
+                <button onclick="app.exportPDF('monthly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span class="text-sm">Monthly PDF</span>
                 </button>
-                <button onclick="app.exportPDF('yearly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300">
-                    <i data-lucide="file-text" class="w-4 h-4"></i><span class="text-sm">Yearly PDF</span>
+                <button onclick="app.exportPDF('yearly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span class="text-sm">Yearly PDF</span>
                 </button>
             </div>
             <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <button onclick="document.getElementById('jsonInput').click()" class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300">
-                    <i data-lucide="upload" class="w-4 h-4"></i><span class="text-sm">Import JSON Backup</span>
+                <button onclick="document.getElementById('jsonInput').click()" class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+                    <span class="text-sm">Import JSON Backup</span>
                 </button>
             </div>
         </div>
         <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="app.importJSON(event)">
 
-        <!-- Add/Edit Form -->
+        <!-- Add Form -->
         <div id="addForm" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6 hidden">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4" id="formTitle">Add New Item</h2>
+            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Item Name</label>
-                    <input type="text" id="itemName" placeholder="e.g., Netflix" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    <input type="text" id="itemName" placeholder="e.g., Netflix" 
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
-                        <input type="number" id="itemAmount" placeholder="0.00" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <input type="number" id="itemAmount" placeholder="0.00" step="0.01"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
@@ -181,6 +231,7 @@
                         </select>
                     </div>
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
                     <select id="itemType" onchange="app.toggleDaySelector()" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
@@ -188,179 +239,167 @@
                         <option value="one-time">One-Time Purchase</option>
                     </select>
                 </div>
-                <div id="daySelector" class="">
+
+                <div id="daySelector">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Day of Month</label>
-                    <select id="itemDay" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white"></select>
+                    <select id="itemDay" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    </select>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Method (Optional)</label>
+                    <input type="text" id="itemPayment" placeholder="e.g., Visa *1234" 
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes (Optional)</label>
+                    <textarea id="itemNotes" placeholder="Add notes..." rows="2"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"></textarea>
+                </div>
+
                 <div class="flex gap-3 pt-2">
-                    <button onclick="app.saveItem()" id="saveBtn" class="flex-1 bg-black dark:bg-white text-white dark:text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100">Add Item</button>
-                    <button onclick="app.cancelForm()" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg font-medium border border-gray-300 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+                    <button onclick="app.saveItem()" id="saveBtn" class="flex-1 bg-black dark:bg-white text-white dark:text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+                        Add Item
+                    </button>
+                    <button onclick="app.cancelForm()" class="flex-1 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg font-medium border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Tabs & Items List -->
+        <!-- Tabs -->
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg mb-6">
             <div class="flex border-b border-gray-200 dark:border-gray-700">
-                <button onclick="app.switchTab('recurring')" id="tabRecurring" class="flex-1 py-3 px-4 font-medium text-gray-900 dark:text-white border-b-2 border-black dark:border-white">Recurring</button>
-                <button onclick="app.switchTab('one-time')" id="tabOneTime" class="flex-1 py-3 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-white">One-Time</button>
+                <button onclick="app.switchTab('recurring')" id="tabRecurring" class="flex-1 py-3 px-4 font-medium text-gray-900 dark:text-white border-b-2 border-black dark:border-white">
+                    Recurring
+                </button>
+                <button onclick="app.switchTab('one-time')" id="tabOneTime" class="flex-1 py-3 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-white">
+                    One-Time
+                </button>
             </div>
-            <div id="itemsList" class="p-6"></div>
+
+            <!-- Items List -->
+            <div id="itemsList" class="p-6">
+            </div>
         </div>
     </div>
 
     <script>
         const app = {
             items: [
-                { id: 1, name: 'Netflix', amount: 15.99, category: 'Entertainment', type: 'recurring', dayOfMonth: 1 },
-                { id: 2, name: 'Spotify', amount: 9.99, category: 'Entertainment', type: 'recurring', dayOfMonth: 5 },
-                { id: 3, name: 'Laptop', amount: 1299.00, category: 'Shopping', type: 'one-time' },
-                { id: 4, name: 'Gym Membership', amount: 45.00, category: 'Health', type: 'recurring', dayOfMonth: 15 }
+                { id: 1, name: 'Netflix', amount: 15.99, category: 'Entertainment', type: 'recurring', dayOfMonth: 1, payment: 'Visa *1234', notes: '' },
+                { id: 2, name: 'Spotify', amount: 9.99, category: 'Entertainment', type: 'recurring', dayOfMonth: 5, payment: '', notes: '' },
+                { id: 3, name: 'Laptop', amount: 1299.00, category: 'Shopping', type: 'one-time', payment: 'Master *5678', notes: 'MacBook Pro' },
+                { id: 4, name: 'Gym Membership', amount: 45.00, category: 'Health', type: 'recurring', dayOfMonth: 15, payment: '', notes: '' }
             ],
             currentTab: 'recurring',
-            theme: localStorage.getItem('theme') || 'light',
-            budget: parseFloat(localStorage.getItem('budget')) || null,
+            theme: 'light',
+            budget: null,
             editingId: null,
             chart: null,
             chartType: 'bar',
+            selectedItems: new Set(),
+            cachedStats: null,
+            cachedCategoryTotals: null,
+            renderTimeout: null,
+            categoryIcons: {
+                'Entertainment': '🎮',
+                'Health': '💪',
+                'Food': '🍔',
+                'Utilities': '💡',
+                'Shopping': '🛍️',
+                'Other': '📦'
+            },
 
             init() {
+                this.theme = this.theme || 'light';
                 this.applyTheme();
-                if (this.budget) document.getElementById('budgetInput').value = this.budget;
-
+                
                 const daySelect = document.getElementById('itemDay');
+                const fragment = document.createDocumentFragment();
                 for (let i = 1; i <= 31; i++) {
-                    const opt = document.createElement('option');
-                    opt.value = i;
-                    opt.textContent = `Day ${i}`;
-                    daySelect.appendChild(opt);
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Day ${i}`;
+                    fragment.appendChild(option);
                 }
-
+                daySelect.appendChild(fragment);
+                
+                this.invalidateCache();
                 this.render();
                 this.updateChart();
                 this.updateDashboard();
                 lucide.createIcons();
             },
 
-            applyTheme() {
-                if (this.theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    document.body.classList.replace('bg-gray-50', 'bg-gray-950');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    document.body.classList.replace('bg-gray-950', 'bg-gray-50');
-                }
-                const icon = document.getElementById('themeIcon');
-                icon.setAttribute('data-lucide', this.theme === 'light' ? 'moon' : 'sun');
-                localStorage.setItem('theme', this.theme);
-                lucide.createIcons();
+            invalidateCache() {
+                this.cachedStats = null;
+                this.cachedCategoryTotals = null;
             },
 
-            toggleTheme() {
-                this.theme = this.theme === 'light' ? 'dark' : 'light';
-                this.applyTheme();
-                if (this.chart) this.updateChart();
-            },
-
-            toggleForm() {
-                const form = document.getElementById('addForm');
-                form.classList.toggle('hidden');
-                if (form.classList.contains('hidden')) {
-                    this.editingId = null;
-                } else {
-                    this.clearForm();
-                    document.getElementById('formTitle').textContent = 'Add New Item';
-                    document.getElementById('saveBtn').textContent = 'Add Item';
-                }
-                document.getElementById('exportMenu').classList.add('hidden');
-            },
-
-            clearForm() {
-                document.getElementById('itemName').value = '';
-                document.getElementById('itemAmount').value = '';
-                document.getElementById('itemCategory').value = 'Entertainment';
-                document.getElementById('itemType').value = 'recurring';
-                document.getElementById('itemDay').value = 1;
-                this.toggleDaySelector();
-            },
-
-            toggleDaySelector() {
-                const isRecurring = document.getElementById('itemType').value === 'recurring';
-                document.getElementById('daySelector').classList.toggle('hidden', !isRecurring);
-            },
-
-            cancelForm() {
-                this.toggleForm();
-            },
-
-            saveItem() {
-                const name = document.getElementById('itemName').value.trim();
-                const amount = parseFloat(document.getElementById('itemAmount').value);
-                const category = document.getElementById('itemCategory').value;
-                const type = document.getElementById('itemType').value;
-                const dayOfMonth = type === 'recurring' ? parseInt(document.getElementById('itemDay').value) : null;
-
-                if (!name || isNaN(amount) || amount <= 0) {
-                    alert('Please enter a valid name and amount.');
-                    return;
-                }
-
-                if (this.editingId) {
-                    const item = this.items.find(i => i.id === this.editingId);
-                    if (item) {
-                        item.name = name;
-                        item.amount = amount;
-                        item.category = category;
-                        item.type = type;
-                        item.dayOfMonth = dayOfMonth;
+            getStats() {
+                if (this.cachedStats) return this.cachedStats;
+                
+                let monthlyTotal = 0;
+                let oneTimeTotal = 0;
+                
+                for (let i = 0; i < this.items.length; i++) {
+                    const item = this.items[i];
+                    if (item.type === 'recurring') {
+                        monthlyTotal += item.amount;
+                    } else {
+                        oneTimeTotal += item.amount;
                     }
-                } else {
-                    this.items.push({
-                        id: Date.now(),
-                        name, amount, category, type, dayOfMonth
-                    });
                 }
-
-                this.toggleForm();
-                this.render();
-                this.updateChart();
-                this.updateDashboard();
-                this.checkBudgetAlert();
-                lucide.createIcons();
+                
+                this.cachedStats = {
+                    monthlyTotal,
+                    yearlyTotal: monthlyTotal * 12,
+                    oneTimeTotal,
+                    itemCount: this.items.length
+                };
+                
+                return this.cachedStats;
             },
 
-            deleteItem(id) {
-                if (confirm('Delete this item?')) {
-                    this.items = this.items.filter(item => item.id !== id);
-                    this.render();
-                    this.updateChart();
-                    this.updateDashboard();
-                    this.checkBudgetAlert();
+            getCategoryTotals() {
+                if (this.cachedCategoryTotals) return this.cachedCategoryTotals;
+                
+                const totals = {};
+                for (let i = 0; i < this.items.length; i++) {
+                    const item = this.items[i];
+                    totals[item.category] = (totals[item.category] || 0) + item.amount;
                 }
+                
+                this.cachedCategoryTotals = totals;
+                return totals;
             },
 
             setBudget() {
-                const val = parseFloat(document.getElementById('budgetInput').value);
-                this.budget = isNaN(val) || val <= 0 ? null : val;
-                localStorage.setItem('budget', this.budget);
+                const value = parseFloat(document.getElementById('budgetInput').value);
+                this.budget = value > 0 ? value : null;
                 this.checkBudgetAlert();
             },
 
             checkBudgetAlert() {
-                const monthly = this.items.filter(i => i.type === 'recurring').reduce((s, i) => s + i.amount, 0);
+                const stats = this.getStats();
+                const monthlyTotal = stats.monthlyTotal;
+                
                 const alert = document.getElementById('budgetAlert');
-                const text = document.getElementById('budgetAlertText');
+                const alertText = document.getElementById('budgetAlertText');
                 const remaining = document.getElementById('budgetRemaining');
 
-                if (this.budget && monthly > 0) {
-                    const diff = this.budget - monthly;
-                    remaining.textContent = diff >= 0 ? `($${diff.toFixed(2)} remaining)` : `($${Math.abs(diff).toFixed(2)} over)`;
-                    if (monthly >= this.budget) {
-                        text.textContent = 'You have exceeded your monthly budget!';
+                if (this.budget) {
+                    const diff = this.budget - monthlyTotal;
+                    remaining.textContent = diff >= 0 ? `$${diff.toFixed(2)} remaining` : `$${Math.abs(diff).toFixed(2)} over budget`;
+                    
+                    if (monthlyTotal >= this.budget * 0.9) {
                         alert.classList.remove('hidden');
-                    } else if (monthly >= this.budget * 0.9) {
-                        text.textContent = 'You are close to your budget limit!';
-                        alert.classList.remove('hidden');
+                        alertText.textContent = monthlyTotal >= this.budget 
+                            ? '⚠️ You have exceeded your monthly budget!'
+                            : '⚠️ You are approaching your monthly budget limit!';
                     } else {
                         alert.classList.add('hidden');
                     }
@@ -370,261 +409,671 @@
                 }
             },
 
-            switchTab(tab) {
-                this.currentTab = tab;
-                document.getElementById('tabRecurring').classList.toggle('text-gray-900', tab === 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('text-gray-500', tab !== 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('dark:text-white', tab === 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('dark:text-gray-400', tab !== 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('border-black', tab === 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('dark:border-white', tab === 'recurring');
-                document.getElementById('tabRecurring').classList.toggle('border-transparent', tab !== 'recurring');
-
-                document.getElementById('tabOneTime').classList.toggle('text-gray-900', tab === 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('text-gray-500', tab !== 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('dark:text-white', tab === 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('dark:text-gray-400', tab !== 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('border-black', tab === 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('dark:border-white', tab === 'one-time');
-                document.getElementById('tabOneTime').classList.toggle('border-transparent', tab !== 'one-time');
-
-                this.render();
+            toggleTheme() {
+                this.theme = this.theme === 'light' ? 'dark' : 'light';
+                this.applyTheme();
             },
 
-            applyFilters() {
-                if (this.filterTimeout) clearTimeout(this.filterTimeout);
-                this.filterTimeout = setTimeout(() => this.render(), 200);
-            },
-
-            render() {
-                const search = document.getElementById('searchInput').value.toLowerCase();
-                const catFilter = document.getElementById('categoryFilter').value;
-                const sortBy = document.getElementById('sortBy').value;
-
-                let filtered = this.items.filter(item => {
-                    if (item.type !== this.currentTab) return false;
-                    if (search && !item.name.toLowerCase().includes(search)) return false;
-                    if (catFilter && item.category !== catFilter) return false;
-                    return true;
-                });
-
-                if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
-                else if (sortBy === 'amount-high') filtered.sort((a, b) => b.amount - a.amount);
-                else if (sortBy === 'amount-low') filtered.sort((a, b) => a.amount - b.amount);
-                else if (sortBy === 'day' && this.currentTab === 'recurring') filtered.sort((a, b) => (a.dayOfMonth || 0) - (b.dayOfMonth || 0));
-
-                const monthly = this.items.filter(i => i.type === 'recurring').reduce((s, i) => s + i.amount, 0);
-                const oneTime = this.items.filter(i => i.type === 'one-time').reduce((s, i) => s + i.amount, 0);
-
-                document.getElementById('monthlyTotal').textContent = `$${monthly.toFixed(2)}`;
-                document.getElementById('yearlyTotal').textContent = `$${(monthly * 12).toFixed(2)}`;
-                document.getElementById('oneTimeTotal').textContent = `$${oneTime.toFixed(2)}`;
-                document.getElementById('itemCount').textContent = this.items.length;
-
-                const listHTML = filtered.length === 0
-                    ? `<div class="text-center py-12 text-gray-500"><i data-lucide="inbox" class="w-12 h-12 mx-auto mb-4"></i><p>No items yet</p></div>`
-                    : filtered.map(item => `
-                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-semibold">${item.name}</div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                        $${item.amount.toFixed(2)} • ${item.category}
-                                        ${item.type === 'recurring' ? `• Day ${item.dayOfMonth} • $${(item.amount*12).toFixed(2)}/year` : ''}
-                                    </div>
-                                </div>
-                                <button onclick="app.deleteItem(${item.id})" class="text-red-600 hover:text-red-800 p-1">
-                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `).join('');
-
-                document.getElementById('itemsList').innerHTML = listHTML;
+            applyTheme() {
+                if (this.theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.body.classList.remove('bg-gray-50');
+                    document.body.classList.add('bg-gray-950');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.body.classList.remove('bg-gray-950');
+                    document.body.classList.add('bg-gray-50');
+                }
+                
+                const icon = document.getElementById('themeIcon');
+                icon.setAttribute('data-lucide', this.theme === 'light' ? 'moon' : 'sun');
                 lucide.createIcons();
             },
 
-            updateChart() {
-                const totals = {};
-                this.items.forEach(item => {
-                    totals[item.category] = (totals[item.category] || 0) + item.amount;
-                });
-                const labels = Object.keys(totals);
-                const data = Object.values(totals);
-                const isDark = this.theme === 'dark';
-
-                if (this.chart) this.chart.destroy();
-
-                this.chart = new Chart(document.getElementById('categoryChart'), {
-                    type: this.chartType,
-                    data: {
-                        labels,
-                        datasets: [{
-                            data,
-                            backgroundColor: isDark
-                                ? ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa', '#f472b6']
-                                : ['#2563eb', '#16a34a', '#ca8a04', '#dc2626', '#7c3aed', '#ec4899']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { position: 'bottom' } }
-                    }
-                });
+            toggleForm() {
+                const form = document.getElementById('addForm');
+                const isHidden = form.classList.contains('hidden');
+                
+                if (isHidden) {
+                    this.editingId = null;
+                    this.clearForm();
+                    document.getElementById('formTitle').textContent = 'Add New Item';
+                    document.getElementById('saveBtn').textContent = 'Add Item';
+                }
+                
+                form.classList.toggle('hidden');
+                document.getElementById('exportMenu').classList.add('hidden');
             },
 
-            updateDashboard() {
-                // Top 5 expensive
-                const top5 = [...this.items].sort((a, b) => b.amount - a.amount).slice(0, 5);
-                document.getElementById('topExpensiveItems').innerHTML = top5.map(item => `
-                    <div class="flex justify-between text-sm">
-                        <span>${item.name}</span>
-                        <span class="font-semibold">$${item.amount.toFixed(2)}</span>
-                    </div>
-                `).join('') || '<p class="text-gray-500">No items yet</p>';
+            clearForm() {
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemAmount').value = '';
+                document.getElementById('itemCategory').value = 'Entertainment';
+                document.getElementById('itemType').value = 'recurring';
+                document.getElementById('itemDay').value = 1;
+                document.getElementById('itemPayment').value = '';
+                document.getElementById('itemNotes').value = '';
+                document.getElementById('daySelector').classList.remove('hidden');
+            },
 
-                // Forecast
-                const recurring = this.items.filter(i => i.type === 'recurring').reduce((s, i) => s + i.amount, 0);
-                const oneTimeAvg = this.items.filter(i => i.type === 'one-time').length > 0
-                    ? this.items.filter(i => i.type === 'one-time').reduce((s, i) => s + i.amount, 0)
-                    : 0;
+            cancelForm() {
+                this.editingId = null;
+                this.toggleForm();
+            },
 
-                document.getElementById('forecastRecurring').textContent = `$${recurring.toFixed(2)}`;
-                document.getElementById('forecastOneTime').textContent = `~$${oneTimeAvg.toFixed(2)}`;
-                document.getElementById('forecastTotal').textContent = `$${ (recurring + oneTimeAvg).toFixed(2) }`;
+            editItem(id) {
+                const item = this.items.find(i => i.id === id);
+                if (!item) return;
+
+                this.editingId = id;
+                document.getElementById('itemName').value = item.name;
+                document.getElementById('itemAmount').value = item.amount;
+                document.getElementById('itemCategory').value = item.category;
+                document.getElementById('itemType').value = item.type;
+                document.getElementById('itemDay').value = item.dayOfMonth || 1;
+                document.getElementById('itemPayment').value = item.payment || '';
+                document.getElementById('itemNotes').value = item.notes || '';
+                
+                this.toggleDaySelector();
+                
+                document.getElementById('formTitle').textContent = 'Edit Item';
+                document.getElementById('saveBtn').textContent = 'Save Changes';
+                document.getElementById('addForm').classList.remove('hidden');
+            },
+
+            duplicateItem(id) {
+                const item = this.items.find(i => i.id === id);
+                if (!item) return;
+
+                this.items.push({
+                    ...item,
+                    id: Date.now(),
+                    name: item.name + ' (Copy)'
+                });
+
+                this.invalidateCache();
+                this.render();
+                this.updateChart();
+                this.updateDashboard();
+                lucide.createIcons();
+            },
+
+            toggleItemSelection(id) {
+                if (this.selectedItems.has(id)) {
+                    this.selectedItems.delete(id);
+                } else {
+                    this.selectedItems.add(id);
+                }
+                this.updateBulkActionsBar();
+                this.render();
+            },
+
+            updateBulkActionsBar() {
+                const bar = document.getElementById('bulkActionsBar');
+                const count = document.getElementById('selectedCount');
+                count.textContent = this.selectedItems.size;
+                
+                if (this.selectedItems.size > 0) {
+                    bar.classList.remove('hidden');
+                } else {
+                    bar.classList.add('hidden');
+                }
+            },
+
+            bulkDelete() {
+                if (this.selectedItems.size === 0) return;
+                
+                if (confirm(`Delete ${this.selectedItems.size} selected items?`)) {
+                    this.items = this.items.filter(item => !this.selectedItems.has(item.id));
+                    this.selectedItems.clear();
+                    this.invalidateCache();
+                    this.updateBulkActionsBar();
+                    this.render();
+                    this.updateChart();
+                    this.updateDashboard();
+                    lucide.createIcons();
+                }
+            },
+
+            clearSelection() {
+                this.selectedItems.clear();
+                this.updateBulkActionsBar();
+                this.render();
+            },
+
+            showExportMenu() {
+                const menu = document.getElementById('exportMenu');
+                menu.classList.toggle('hidden');
+                document.getElementById('addForm').classList.add('hidden');
+            },
+
+            toggleDaySelector() {
+                const type = document.getElementById('itemType').value;
+                const daySelector = document.getElementById('daySelector');
+                daySelector.classList.toggle('hidden', type === 'one-time');
+            },
+
+            applyFilters() {
+                if (this.renderTimeout) {
+                    clearTimeout(this.renderTimeout);
+                }
+                this.renderTimeout = setTimeout(() => {
+                    this.render();
+                }, 150);
+            },
+
+            getFilteredItems() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const categoryFilter = document.getElementById('categoryFilter').value;
+                const sortBy = document.getElementById('sortBy').value;
+
+                const filtered = [];
+                for (let i = 0; i < this.items.length; i++) {
+                    const item = this.items[i];
+                    
+                    if (item.type !== this.currentTab) continue;
+                    if (search && !item.name.toLowerCase().includes(search)) continue;
+                    if (categoryFilter && item.category !== categoryFilter) continue;
+                    
+                    filtered.push(item);
+                }
+
+                if (sortBy === 'name') {
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                } else if (sortBy === 'amount-high') {
+                    filtered.sort((a, b) => b.amount - a.amount);
+                } else if (sortBy === 'amount-low') {
+                    filtered.sort((a, b) => a.amount - b.amount);
+                } else if (sortBy === 'day' && this.currentTab === 'recurring') {
+                    filtered.sort((a, b) => (a.dayOfMonth || 0) - (b.dayOfMonth || 0));
+                }
+
+                return filtered;
+            },
+
+            switchTab(tab) {
+                this.currentTab = tab;
+                
+                const recurringTab = document.getElementById('tabRecurring');
+                const oneTimeTab = document.getElementById('tabOneTime');
+                
+                if (tab === 'recurring') {
+                    recurringTab.classList.remove('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                    recurringTab.classList.add('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
+                    oneTimeTab.classList.remove('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
+                    oneTimeTab.classList.add('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                } else {
+                    oneTimeTab.classList.remove('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                    oneTimeTab.classList.add('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
+                    recurringTab.classList.remove('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
+                    recurringTab.classList.add('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                }
+                
+                this.render();
+            },
+
+            saveItem() {
+                const name = document.getElementById('itemName').value;
+                const amount = parseFloat(document.getElementById('itemAmount').value);
+                const category = document.getElementById('itemCategory').value;
+                const type = document.getElementById('itemType').value;
+                const dayOfMonth = type === 'recurring' ? parseInt(document.getElementById('itemDay').value) : null;
+                const payment = document.getElementById('itemPayment').value;
+                const notes = document.getElementById('itemNotes').value;
+
+                if (!name || !amount) {
+                    alert('Please fill in required fields');
+                    return;
+                }
+
+                if (this.editingId) {
+                    const index = this.items.findIndex(i => i.id === this.editingId);
+                    if (index !== -1) {
+                        this.items[index] = {
+                            ...this.items[index],
+                            name,
+                            amount,
+                            category,
+                            type,
+                            dayOfMonth,
+                            payment,
+                            notes
+                        };
+                    }
+                    this.editingId = null;
+                } else {
+                    this.items.push({
+                        id: Date.now(),
+                        name,
+                        amount,
+                        category,
+                        type,
+                        dayOfMonth,
+                        payment,
+                        notes
+                    });
+                }
+
+                this.invalidateCache();
+                this.clearForm();
+                this.toggleForm();
+                this.render();
+                this.updateChart();
+                this.updateDashboard();
+                lucide.createIcons();
+            },
+
+            deleteItem(id) {
+                if (confirm('Delete this item?')) {
+                    this.items = this.items.filter(item => item.id !== id);
+                    this.selectedItems.delete(id);
+                    this.invalidateCache();
+                    this.updateBulkActionsBar();
+                    this.render();
+                    this.updateChart();
+                    this.updateDashboard();
+                    lucide.createIcons();
+                }
             },
 
             setChartType(type) {
                 this.chartType = type;
-                document.getElementById('barChartBtn').classList.toggle('bg-black', type === 'bar');
-                document.getElementById('barChartBtn').classList.toggle('dark:bg-white', type === 'bar');
-                document.getElementById('barChartBtn').classList.toggle('bg-gray-200', type !== 'bar');
-                document.getElementById('barChartBtn').classList.toggle('dark:bg-gray-700', type !== 'bar');
-                document.getElementById('pieChartBtn').classList.toggle('bg-black', type === 'pie');
-                document.getElementById('pieChartBtn').classList.toggle('dark:bg-white', type === 'pie');
-                document.getElementById('pieChartBtn').classList.toggle('bg-gray-200', type !== 'pie');
-                document.getElementById('pieChartBtn').classList.toggle('dark:bg-gray-700', type !== 'pie');
+                
+                const barBtn = document.getElementById('barChartBtn');
+                const pieBtn = document.getElementById('pieChartBtn');
+                
+                if (type === 'bar') {
+                    barBtn.className = 'px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded';
+                    pieBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded';
+                } else {
+                    pieBtn.className = 'px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded';
+                    barBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded';
+                }
+                
                 this.updateChart();
             },
 
-            showExportMenu() {
-                document.getElementById('exportMenu').classList.toggle('hidden');
-                document.getElementById('addForm').classList.add('hidden');
+            updateChart() {
+                const ctx = document.getElementById('categoryChart');
+                const categoryTotals = this.getCategoryTotals();
+
+                const labels = Object.keys(categoryTotals);
+                const data = Object.values(categoryTotals);
+                const isDark = this.theme === 'dark';
+
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+
+                const chartConfig = {
+                    type: this.chartType,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Spending by Category',
+                            data: data,
+                            backgroundColor: this.chartType === 'pie' 
+                                ? ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+                                : (isDark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'),
+                            borderColor: isDark ? 'rgba(255, 255, 255, 1)' : 'rgba(0, 0, 0, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        animation: {
+                            duration: 300
+                        },
+                        plugins: {
+                            legend: {
+                                display: this.chartType === 'pie',
+                                position: 'right',
+                                labels: {
+                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                }
+                            }
+                        },
+                        scales: this.chartType === 'bar' ? {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toFixed(0);
+                                    },
+                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                },
+                                grid: {
+                                    color: isDark ? '#374151' : '#e5e7eb'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                },
+                                grid: {
+                                    color: isDark ? '#374151' : '#e5e7eb'
+                                }
+                            }
+                        } : {}
+                    }
+                };
+
+                this.chart = new Chart(ctx, chartConfig);
+            },
+
+            updateDashboard() {
+                const top5 = [...this.items]
+                    .sort((a, b) => b.amount - a.amount)
+                    .slice(0, 5);
+                
+                const topExpensiveHTML = top5.length > 0 ? top5.map((item, index) => `
+                    <div class="flex items-center justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-bold text-gray-400 dark:text-gray-500">${index + 1}</span>
+                            <span class="text-lg">${this.categoryIcons[item.category] || '📦'}</span>
+                            <div>
+                                <div class="font-medium text-gray-900 dark:text-white">${item.name}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.category}</div>
+                            </div>
+                        </div>
+                        <span class="font-semibold text-gray-900 dark:text-white">$${item.amount.toFixed(2)}</span>
+                    </div>
+                `).join('') : '<p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">No items yet</p>';
+                
+                document.getElementById('topExpensiveItems').innerHTML = topExpensiveHTML;
+
+                const stats = this.getStats();
+                const recurringTotal = stats.monthlyTotal;
+                
+                let oneTimeSum = 0;
+                let oneTimeCount = 0;
+                for (let i = 0; i < this.items.length; i++) {
+                    if (this.items[i].type === 'one-time') {
+                        oneTimeSum += this.items[i].amount;
+                        oneTimeCount++;
+                    }
+                }
+                
+                const oneTimeAverage = oneTimeCount > 0 ? oneTimeSum / 3 : 0;
+                const forecastTotal = recurringTotal + oneTimeAverage;
+                
+                document.getElementById('forecastRecurring').textContent = `$${recurringTotal.toFixed(2)}`;
+                document.getElementById('forecastOneTime').textContent = `$${oneTimeAverage.toFixed(2)}`;
+                document.getElementById('forecastTotal').textContent = `$${forecastTotal.toFixed(2)}`;
+                
+                const note = oneTimeCount > 0 
+                    ? `Based on average of ${oneTimeCount} one-time purchase(s)`
+                    : 'No one-time purchase history for prediction';
+                document.getElementById('forecastNote').textContent = note;
             },
 
             exportCSV() {
-                const headers = ['Name', 'Amount', 'Category', 'Type', 'Day of Month'];
-                const rows = this.items.map(i => [
-                    i.name,
-                    i.amount,
-                    i.category,
-                    i.type,
-                    i.dayOfMonth || ''
+                const headers = ['Name', 'Amount', 'Category', 'Type', 'Day of Month', 'Payment', 'Notes'];
+                const rows = this.items.map(item => [
+                    item.name,
+                    item.amount,
+                    item.category,
+                    item.type,
+                    item.dayOfMonth || 'N/A',
+                    item.payment || '',
+                    item.notes || ''
                 ]);
-                let csv = headers.join(',') + '\n' + rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
+
+                let csvContent = headers.join(',') + '\n';
+                rows.forEach(row => {
+                    csvContent += row.map(field => `"${field}"`).join(',') + '\n';
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `lazare-trackt-${new Date().toISOString().slice(0,10)}.csv`;
+                a.download = `lazare-trackt-${new Date().toISOString().split('T')[0]}.csv`;
                 a.click();
-                URL.revokeObjectURL(url);
-                this.showExportMenu();
-            },
-
-            importCSV(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    const lines = ev.target.result.split('\n');
-                    for (let i = 1; i < lines.length; i++) {
-                        const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
-                        if (cols.length < 4) continue;
-                        this.items.push({
-                            id: Date.now() + i,
-                            name: cols[0],
-                            amount: parseFloat(cols[1]),
-                            category: cols[2],
-                            type: cols[3],
-                            dayOfMonth: cols[4] ? parseInt(cols[4]) : null
-                        });
-                    }
-                    this.render();
-                    this.updateChart();
-                    this.updateDashboard();
-                    this.checkBudgetAlert();
-                    alert('CSV imported!');
-                };
-                reader.readAsText(file);
-                e.target.value = '';
+                window.URL.revokeObjectURL(url);
+                
+                document.getElementById('exportMenu').classList.add('hidden');
             },
 
             exportJSON() {
-                const data = { budget: this.budget, items: this.items };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
+                const backup = {
+                    version: '1.0',
+                    exportDate: new Date().toISOString(),
+                    budget: this.budget,
+                    items: this.items
+                };
+
+                const json = JSON.stringify(backup, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `lazare-trackt-backup-${new Date().toISOString().slice(0,10)}.json`;
+                a.download = `lazare-trackt-backup-${new Date().toISOString().split('T')[0]}.json`;
                 a.click();
-                URL.revokeObjectURL(url);
-                this.showExportMenu();
+                window.URL.revokeObjectURL(url);
+                
+                document.getElementById('exportMenu').classList.add('hidden');
             },
 
-            importJSON(e) {
-                const file = e.target.files[0];
+            importJSON(event) {
+                const file = event.target.files[0];
                 if (!file) return;
+
                 const reader = new FileReader();
-                reader.onload = ev => {
+                reader.onload = (e) => {
                     try {
-                        const data = JSON.parse(ev.target.result);
-                        if (confirm('Replace all data? (Cancel to merge)')) {
-                            this.items = data.items || [];
-                            this.budget = data.budget || null;
-                            if (this.budget) document.getElementById('budgetInput').value = this.budget;
-                        } else {
-                            this.items.push(...(data.items || []).map(i => ({...i, id: Date.now() + Math.random()})));
+                        const backup = JSON.parse(e.target.result);
+                        
+                        if (!backup.items || !Array.isArray(backup.items)) {
+                            throw new Error('Invalid backup file format');
                         }
-                        localStorage.setItem('budget', this.budget);
+
+                        const merge = confirm('Merge with existing data? Click Cancel to replace all data.');
+                        
+                        if (merge) {
+                            backup.items.forEach(item => {
+                                this.items.push({
+                                    ...item,
+                                    id: Date.now() + Math.random()
+                                });
+                            });
+                        } else {
+                            this.items = backup.items;
+                            if (backup.budget) {
+                                this.budget = backup.budget;
+                                document.getElementById('budgetInput').value = backup.budget;
+                            }
+                        }
+
+                        this.invalidateCache();
                         this.render();
                         this.updateChart();
                         this.updateDashboard();
-                        this.checkBudgetAlert();
-                        alert('JSON imported!');
-                    } catch (err) {
-                        alert('Invalid JSON file');
+                        lucide.createIcons();
+                        alert('JSON backup imported successfully!');
+                    } catch (error) {
+                        alert('Error importing JSON: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
-                e.target.value = '';
+                
+                event.target.value = '';
+            },
+
+            importCSV(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    const lines = text.split('\n');
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+
+                        const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                        if (!matches || matches.length < 4) continue;
+
+                        const [name, amount, category, type, dayOfMonth, payment, notes] = matches.map(field => 
+                            field.replace(/^"|"$/g, '').trim()
+                        );
+
+                        this.items.push({
+                            id: Date.now() + i,
+                            name,
+                            amount: parseFloat(amount),
+                            category,
+                            type,
+                            dayOfMonth: dayOfMonth && dayOfMonth !== 'N/A' ? parseInt(dayOfMonth) : null,
+                            payment: payment || '',
+                            notes: notes || ''
+                        });
+                    }
+
+                    this.invalidateCache();
+                    this.render();
+                    this.updateChart();
+                    this.updateDashboard();
+                    lucide.createIcons();
+                    alert('CSV imported successfully!');
+                };
+                reader.readAsText(file);
+                
+                event.target.value = '';
             },
 
             exportPDF(period) {
-                // Simplified PDF export via print window
-                const recurring = this.items.filter(i => i.type === 'recurring');
-                const oneTime = this.items.filter(i => i.type === 'one-time');
-                const monthlyTotal = recurring.reduce((s, i) => s + i.amount, 0);
-                const total = period === 'yearly' ? monthlyTotal * 12 + oneTime.reduce((s, i) => s + i.amount, 0) : monthlyTotal + oneTime.reduce((s, i) => s + i.amount, 0);
+                const recurringItems = this.items.filter(item => item.type === 'recurring');
+                const oneTimeItems = this.items.filter(item => item.type === 'one-time');
+                
+                const monthlyTotal = recurringItems.reduce((sum, item) => sum + item.amount, 0);
+                const yearlyTotal = period === 'yearly' ? monthlyTotal * 12 : monthlyTotal;
+                const oneTimeTotal = oneTimeItems.reduce((sum, item) => sum + item.amount, 0);
 
-                const win = window.open('', '_blank');
-                win.document.write(`
-                    <html><head><title>Lazare Trackt Report</title>
-                    <style>body{font-family:Arial,sans-serif;padding:40px;} table{width:100%;border-collapse:collapse;margin:20px 0;} th,td{border:1px solid #ccc;padding:8px;text-align:left;} th{background:#f0f0f0;}</style>
-                    </head><body>
-                    <h1>Lazare Trackt - ${period === 'yearly' ? 'Yearly' : 'Monthly'} Report</h1>
-                    <p>Generated on ${new Date().toLocaleDateString()}</p>
-                    <h2>Summary</h2>
-                    <p>Total Recurring (monthly): $${monthlyTotal.toFixed(2)}</p>
-                    <p>Total One-Time: $${oneTime.reduce((s,i)=>s+i.amount,0).toFixed(2)}</p>
-                    <p><strong>Grand Total: $${total.toFixed(2)}</strong></p>
-                    ${recurring.length ? '<h2>Recurring Items</h2>' + recurring.map(i => `<p>${i.name} - $${i.amount} (Day ${i.dayOfMonth})</p>`).join('') : ''}
-                    ${oneTime.length ? '<h2>One-Time Items</h2>' + oneTime.map(i => `<p>${i.name} - $${i.amount}</p>`).join('') : ''}
-                    </body></html>
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Lazare Trackt - ${period === 'yearly' ? 'Yearly' : 'Monthly'} Report</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 40px; color: #000; }
+                            h1 { font-size: 24px; margin-bottom: 10px; }
+                            .subtitle { color: #666; margin-bottom: 30px; }
+                            .summary { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+                            .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+                            .summary-item strong { font-weight: 600; }
+                            h2 { font-size: 18px; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px; }
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+                            th { background: #f5f5f5; font-weight: 600; }
+                            .footer { margin-top: 50px; text-align: center; color: #666; font-size: 12px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Lazare Trackt Report</h1>
+                        <div class="subtitle">${period === 'yearly' ? 'Annual' : 'Monthly'} Expense Summary - ${new Date().toLocaleDateString()}</div>
+                        
+                        <div class="summary">
+                            <div class="summary-item"><span>Total Items:</span><strong>${this.items.length}</strong></div>
+                            <div class="summary-item"><span>${period === 'yearly' ? 'Annual' : 'Monthly'} Recurring:</span><strong>$${yearlyTotal.toFixed(2)}</strong></div>
+                            <div class="summary-item"><span>One-Time Purchases:</span><strong>$${oneTimeTotal.toFixed(2)}</strong></div>
+                            <div class="summary-item" style="font-size: 18px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
+                                <span>Grand Total:</span><strong>$${(yearlyTotal + oneTimeTotal).toFixed(2)}</strong>
+                            </div>
+                        </div>
+
+                        ${recurringItems.length > 0 ? `
+                            <h2>Recurring Items</h2>
+                            <table>
+                                <thead><tr><th>Item</th><th>Category</th><th>Day</th><th>Monthly</th>${period === 'yearly' ? '<th>Yearly</th>' : ''}</tr></thead>
+                                <tbody>
+                                    ${recurringItems.map(item => `
+                                        <tr><td>${item.name}</td><td>${item.category}</td><td>Day ${item.dayOfMonth}</td><td>$${item.amount.toFixed(2)}</td>${period === 'yearly' ? `<td>$${(item.amount * 12).toFixed(2)}</td>` : ''}</tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        ` : ''}
+
+                        ${oneTimeItems.length > 0 ? `
+                            <h2>One-Time Purchases</h2>
+                            <table>
+                                <thead><tr><th>Item</th><th>Category</th><th>Amount</th></tr></thead>
+                                <tbody>
+                                    ${oneTimeItems.map(item => `<tr><td>${item.name}</td><td>${item.category}</td><td>$${item.amount.toFixed(2)}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        ` : ''}
+
+                        <div class="footer">Generated by Lazare Trackt on ${new Date().toLocaleString()}</div>
+                    </body>
+                    </html>
                 `);
-                win.document.close();
-                setTimeout(() => win.print(), 500);
-                this.showExportMenu();
+                
+                printWindow.document.close();
+                setTimeout(() => { printWindow.print(); }, 250);
+                
+                document.getElementById('exportMenu').classList.add('hidden');
+            },
+
+            render() {
+                const stats = this.getStats();
+
+                document.getElementById('monthlyTotal').textContent = `$${stats.monthlyTotal.toFixed(2)}`;
+                document.getElementById('yearlyTotal').textContent = `$${stats.yearlyTotal.toFixed(2)}`;
+                document.getElementById('oneTimeTotal').textContent = `$${stats.oneTimeTotal.toFixed(2)}`;
+                document.getElementById('itemCount').textContent = stats.itemCount;
+
+                this.checkBudgetAlert();
+
+                const filteredItems = this.getFilteredItems();
+                const htmlParts = [];
+
+                for (let i = 0; i < filteredItems.length; i++) {
+                    const item = filteredItems[i];
+                    const isSelected = this.selectedItems.has(item.id);
+                    
+                    htmlParts.push(`
+                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 hover:border-gray-300 dark:hover:border-gray-600 transition-colors ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700' : ''}">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start gap-3 flex-1">
+                                    <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="app.toggleItemSelection(${item.id})" class="mt-1 w-4 h-4 cursor-pointer">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-lg">${this.categoryIcons[item.category] || '📦'}</span>
+                                            <h3 class="font-semibold text-gray-900 dark:text-white">${item.name}</h3>
+                                            <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded">${item.category}</span>
+                                        </div>
+                                        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                            <span class="flex items-center gap-1"><i data-lucide="dollar-sign" class="w-4 h-4"></i>$${item.amount.toFixed(2)}${item.type === 'recurring' ? '/month' : ''}</span>
+                                            ${item.type === 'recurring' ? `<span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i>Day ${item.dayOfMonth}</span><span class="text-gray-400 dark:text-gray-500">$${(item.amount * 12).toFixed(2)}/year</span>` : ''}
+                                            ${item.payment ? `<span class="flex items-center gap-1"><i data-lucide="credit-card" class="w-4 h-4"></i>${item.payment}</span>` : ''}
+                                        </div>
+                                        ${item.notes ? `<div class="text-sm text-gray-500 dark:text-gray-400 italic">${item.notes}</div>` : ''}
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="app.editItem(${item.id})" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-2"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
+                                    <button onclick="app.duplicateItem(${item.id})" class="text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors p-2"><i data-lucide="copy" class="w-5 h-5"></i></button>
+                                    <button onclick="app.deleteItem(${item.id})" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                const itemsHTML = htmlParts.length > 0 ? htmlParts.join('') : `
+                    <div class="text-center py-12 text-gray-400 dark:text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3"></i>
+                        <p>No ${this.currentTab} items yet</p>
+                    </div>
+                `;
+
+                document.getElementById('itemsList').innerHTML = itemsHTML;
+                lucide.createIcons();
             }
         };
 
