@@ -11,34 +11,51 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
+        .dark {
+            color-scheme: dark;
+        }
+        .theme-btn {
+            background: rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+        .dark .theme-btn {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .theme-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+        .dark .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-200">
     <div class="max-w-4xl mx-auto p-6">
         <!-- Header -->
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-6 shadow-md">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="shopping-cart" class="w-6 h-6 dark:text-white"></i>
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-900 dark:text-white"></i>
                     <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Lazare Trackt</h1>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="app.showExportMenu()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i data-lucide="download" class="w-5 h-5"></i>
+                    <button onclick="app.showExportMenu()" class="theme-btn p-2 rounded-lg">
+                        <i data-lucide="download" class="w-5 h-5 text-gray-900 dark:text-white"></i>
                     </button>
-                    <button onclick="document.getElementById('csvInput').click()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i data-lucide="upload" class="w-5 h-5"></i>
+                    <button onclick="document.getElementById('csvInput').click()" class="theme-btn p-2 rounded-lg">
+                        <i data-lucide="upload" class="w-5 h-5 text-gray-900 dark:text-white"></i>
                     </button>
-                    <button onclick="app.toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i data-lucide="moon" id="themeIcon" class="w-5 h-5"></i>
+                    <button onclick="app.toggleTheme()" class="theme-btn p-2 rounded-lg">
+                        <i data-lucide="moon" id="themeIcon" class="w-5 h-5 text-gray-900 dark:text-white"></i>
                     </button>
                 </div>
             </div>
             <input type="file" id="csvInput" accept=".csv" class="hidden" onchange="app.importCSV(event)">
             
             <!-- Budget Alert -->
-            <div id="budgetAlert" class="hidden mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                <div class="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+            <div id="budgetAlert" class="hidden mb-4 p-3 bg-yellow-100 dark:bg-yellow-900/40 border-2 border-yellow-400 dark:border-yellow-600 rounded-lg">
+                <div class="flex items-center gap-2 text-yellow-900 dark:text-yellow-100">
                     <i data-lucide="alert-triangle" class="w-5 h-5"></i>
                     <span class="text-sm font-medium" id="budgetAlertText"></span>
                 </div>
@@ -46,48 +63,48 @@
             
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Monthly Recurring</div>
-                    <div class="text-2xl font-semibold text-gray-900 dark:text-white" id="monthlyTotal">$0.00</div>
+                <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1 font-medium">Monthly Recurring</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white" id="monthlyTotal">$0.00</div>
                 </div>
-                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Yearly Total</div>
-                    <div class="text-2xl font-semibold text-gray-900 dark:text-white" id="yearlyTotal">$0.00</div>
+                <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1 font-medium">Yearly Total</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white" id="yearlyTotal">$0.00</div>
                 </div>
-                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">One-Time Total</div>
-                    <div class="text-2xl font-semibold text-gray-900 dark:text-white" id="oneTimeTotal">$0.00</div>
+                <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1 font-medium">One-Time Total</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white" id="oneTimeTotal">$0.00</div>
                 </div>
-                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Items</div>
-                    <div class="text-2xl font-semibold text-gray-900 dark:text-white" id="itemCount">0</div>
+                <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1 font-medium">Total Items</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white" id="itemCount">0</div>
                 </div>
             </div>
 
             <!-- Budget Setter -->
             <div class="flex items-center gap-3">
-                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Monthly Budget:</label>
+                <label class="text-sm font-semibold text-gray-800 dark:text-gray-200">Monthly Budget:</label>
                 <input type="number" id="budgetInput" placeholder="Set budget" step="0.01" value=""
                     onchange="app.setBudget()"
-                    class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <span class="text-sm text-gray-600 dark:text-gray-400" id="budgetRemaining"></span>
+                    class="flex-1 px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-medium">
+                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300" id="budgetRemaining"></span>
             </div>
         </div>
 
         <!-- Add Item Button -->
-        <button onclick="app.toggleForm()" class="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-4 rounded-lg font-medium mb-6 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+        <button onclick="app.toggleForm()" class="w-full bg-blue-600 dark:bg-blue-500 text-white py-3 px-4 rounded-lg font-semibold mb-6 hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-md flex items-center justify-center gap-2">
             <i data-lucide="plus" class="w-5 h-5"></i>
             Add Item
         </button>
 
         <!-- Search and Filter -->
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-4 mb-6 shadow-md">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                 <input type="text" id="searchInput" placeholder="Search items..." 
                     oninput="app.applyFilters()"
-                    class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    class="px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 
-                <select id="categoryFilter" onchange="app.applyFilters()" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                <select id="categoryFilter" onchange="app.applyFilters()" class="px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Categories</option>
                     <option>Entertainment</option>
                     <option>Health</option>
@@ -97,7 +114,7 @@
                     <option>Other</option>
                 </select>
 
-                <select id="sortBy" onchange="app.applyFilters()" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                <select id="sortBy" onchange="app.applyFilters()" class="px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="name">Sort by Name</option>
                     <option value="amount-high">Amount (High to Low)</option>
                     <option value="amount-low">Amount (Low to High)</option>
@@ -106,32 +123,30 @@
             </div>
             
             <!-- Bulk Actions Bar -->
-            <div id="bulkActionsBar" class="hidden pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div id="bulkActionsBar" class="hidden pt-3 border-t-2 border-gray-300 dark:border-gray-600">
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         <span id="selectedCount">0</span> items selected
                     </span>
                     <div class="flex gap-2">
-                        <button onclick="app.bulkDelete()" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
+                        <button onclick="app.bulkDelete()" class="px-3 py-1 bg-red-600 text-white text-sm rounded font-semibold hover:bg-red-700 transition-colors">
                             Delete Selected
                         </button>
-                        <button onclick="app.clearSelection()" class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">
+                        <button onclick="app.clearSelection()" class="px-3 py-1 bg-gray-400 dark:bg-gray-600 text-white text-sm rounded font-semibold hover:bg-gray-500 dark:hover:bg-gray-500 transition-colors">
                             Clear
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Category Chart -->
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
+        </div><!-- Category Chart -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-6 shadow-md">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Spending by Category</h2>
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">Spending by Category</h2>
                 <div class="flex gap-2">
-                    <button onclick="app.setChartType('bar')" id="barChartBtn" class="px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded">
+                    <button onclick="app.setChartType('bar')" id="barChartBtn" class="px-3 py-1 text-sm bg-blue-600 dark:bg-blue-500 text-white rounded font-semibold">
                         Bar
                     </button>
-                    <button onclick="app.setChartType('pie')" id="pieChartBtn" class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
+                    <button onclick="app.setChartType('pie')" id="pieChartBtn" class="px-3 py-1 text-sm bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded font-semibold">
                         Pie
                     </button>
                 </div>
@@ -142,30 +157,30 @@
         <!-- Dashboard Widgets -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Most Expensive Items -->
-            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 5 Most Expensive</h2>
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 shadow-md">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Top 5 Most Expensive</h2>
                 <div id="topExpensiveItems" class="space-y-3"></div>
             </div>
 
             <!-- Spending Forecast -->
-            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Next Month Forecast</h2>
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 shadow-md">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Next Month Forecast</h2>
                 <div id="forecastWidget">
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Recurring Charges</span>
-                            <span class="font-semibold text-gray-900 dark:text-white" id="forecastRecurring">$0.00</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Recurring Charges</span>
+                            <span class="font-bold text-gray-900 dark:text-white" id="forecastRecurring">$0.00</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Predicted One-Time</span>
-                            <span class="font-semibold text-gray-900 dark:text-white" id="forecastOneTime">$0.00</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Predicted One-Time</span>
+                            <span class="font-bold text-gray-900 dark:text-white" id="forecastOneTime">$0.00</span>
                         </div>
-                        <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div class="pt-3 border-t-2 border-gray-300 dark:border-gray-600">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Forecast</span>
-                                <span class="text-xl font-bold text-gray-900 dark:text-white" id="forecastTotal">$0.00</span>
+                                <span class="text-sm font-bold text-gray-800 dark:text-gray-200">Total Forecast</span>
+                                <span class="text-xl font-bold text-blue-600 dark:text-blue-400" id="forecastTotal">$0.00</span>
                             </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2" id="forecastNote"></p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-2" id="forecastNote"></p>
                         </div>
                     </div>
                 </div>
@@ -173,28 +188,28 @@
         </div>
 
         <!-- Export Menu -->
-        <div id="exportMenu" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6 hidden">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Export Data</h3>
+        <div id="exportMenu" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-4 mb-6 hidden shadow-md">
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Export Data</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button onclick="app.exportCSV()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                <button onclick="app.exportCSV()" class="flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-800 dark:text-gray-200 font-medium">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span class="text-sm">CSV</span>
                 </button>
-                <button onclick="app.exportJSON()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                <button onclick="app.exportJSON()" class="flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-800 dark:text-gray-200 font-medium">
                     <i data-lucide="code" class="w-4 h-4"></i>
                     <span class="text-sm">JSON</span>
                 </button>
-                <button onclick="app.exportPDF('monthly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                <button onclick="app.exportPDF('monthly')" class="flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-800 dark:text-gray-200 font-medium">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span class="text-sm">Monthly PDF</span>
                 </button>
-                <button onclick="app.exportPDF('yearly')" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+                <button onclick="app.exportPDF('yearly')" class="flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-800 dark:text-gray-200 font-medium">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span class="text-sm">Yearly PDF</span>
                 </button>
             </div>
-            <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <button onclick="document.getElementById('jsonInput').click()" class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300">
+            <div class="mt-3 pt-3 border-t-2 border-gray-300 dark:border-gray-600">
+                <button onclick="document.getElementById('jsonInput').click()" class="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-800 dark:text-gray-200 font-medium">
                     <i data-lucide="upload" class="w-4 h-4"></i>
                     <span class="text-sm">Import JSON Backup</span>
                 </button>
@@ -203,25 +218,25 @@
         <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="app.importJSON(event)">
 
         <!-- Add Form -->
-        <div id="addForm" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6 hidden">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4" id="formTitle">Add New Item</h2>
+        <div id="addForm" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-6 hidden shadow-md">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4" id="formTitle">Add New Item</h2>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Item Name</label>
+                    <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Item Name</label>
                     <input type="text" id="itemName" placeholder="e.g., Netflix" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
+                        <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Amount</label>
                         <input type="number" id="itemAmount" placeholder="0.00" step="0.01"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                            class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-                        <select id="itemCategory" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Category</label>
+                        <select id="itemCategory" class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option>Entertainment</option>
                             <option>Health</option>
                             <option>Food</option>
@@ -233,36 +248,36 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
-                    <select id="itemType" onchange="app.toggleDaySelector()" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Type</label>
+                    <select id="itemType" onchange="app.toggleDaySelector()" class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="recurring">Recurring (Monthly)</option>
                         <option value="one-time">One-Time Purchase</option>
                     </select>
                 </div>
 
                 <div id="daySelector">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Day of Month</label>
-                    <select id="itemDay" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Day of Month</label>
+                    <select id="itemDay" class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Method (Optional)</label>
+                    <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Payment Method (Optional)</label>
                     <input type="text" id="itemPayment" placeholder="e.g., Visa *1234" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes (Optional)</label>
+                    <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">Notes (Optional)</label>
                     <textarea id="itemNotes" placeholder="Add notes..." rows="2"
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"></textarea>
+                        class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"></textarea>
                 </div>
 
                 <div class="flex gap-3 pt-2">
-                    <button onclick="app.saveItem()" id="saveBtn" class="flex-1 bg-black dark:bg-white text-white dark:text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+                    <button onclick="app.saveItem()" id="saveBtn" class="flex-1 bg-blue-600 dark:bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                         Add Item
                     </button>
-                    <button onclick="app.cancelForm()" class="flex-1 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg font-medium border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <button onclick="app.cancelForm()" class="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg font-semibold border-2 border-gray-400 dark:border-gray-500 hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">
                         Cancel
                     </button>
                 </div>
@@ -270,12 +285,12 @@
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg mb-6">
-            <div class="flex border-b border-gray-200 dark:border-gray-700">
-                <button onclick="app.switchTab('recurring')" id="tabRecurring" class="flex-1 py-3 px-4 font-medium text-gray-900 dark:text-white border-b-2 border-black dark:border-white">
+        <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mb-6 shadow-md">
+            <div class="flex border-b-2 border-gray-300 dark:border-gray-600">
+                <button onclick="app.switchTab('recurring')" id="tabRecurring" class="flex-1 py-3 px-4 font-bold text-gray-900 dark:text-white border-b-4 border-blue-600 dark:border-blue-400">
                     Recurring
                 </button>
-                <button onclick="app.switchTab('one-time')" id="tabOneTime" class="flex-1 py-3 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-900 dark:hover:text-white">
+                <button onclick="app.switchTab('one-time')" id="tabOneTime" class="flex-1 py-3 px-4 font-semibold text-gray-600 dark:text-gray-400 border-b-4 border-transparent hover:text-gray-900 dark:hover:text-white">
                     One-Time
                 </button>
             </div>
@@ -285,7 +300,6 @@
             </div>
         </div>
     </div>
-
     <script>
         const app = {
             items: [
@@ -412,17 +426,18 @@
             toggleTheme() {
                 this.theme = this.theme === 'light' ? 'dark' : 'light';
                 this.applyTheme();
+                this.updateChart();
             },
 
             applyTheme() {
                 if (this.theme === 'dark') {
                     document.documentElement.classList.add('dark');
-                    document.body.classList.remove('bg-gray-50');
-                    document.body.classList.add('bg-gray-950');
+                    document.body.classList.remove('bg-gray-100');
+                    document.body.classList.add('bg-gray-900');
                 } else {
                     document.documentElement.classList.remove('dark');
-                    document.body.classList.remove('bg-gray-950');
-                    document.body.classList.add('bg-gray-50');
+                    document.body.classList.remove('bg-gray-900');
+                    document.body.classList.add('bg-gray-100');
                 }
                 
                 const icon = document.getElementById('themeIcon');
@@ -598,15 +613,15 @@
                 const oneTimeTab = document.getElementById('tabOneTime');
                 
                 if (tab === 'recurring') {
-                    recurringTab.classList.remove('text-gray-500', 'dark:text-gray-400', 'border-transparent');
-                    recurringTab.classList.add('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
-                    oneTimeTab.classList.remove('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
-                    oneTimeTab.classList.add('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                    recurringTab.classList.remove('text-gray-600', 'dark:text-gray-400', 'border-transparent');
+                    recurringTab.classList.add('text-gray-900', 'dark:text-white', 'border-blue-600', 'dark:border-blue-400');
+                    oneTimeTab.classList.remove('text-gray-900', 'dark:text-white', 'border-blue-600', 'dark:border-blue-400');
+                    oneTimeTab.classList.add('text-gray-600', 'dark:text-gray-400', 'border-transparent');
                 } else {
-                    oneTimeTab.classList.remove('text-gray-500', 'dark:text-gray-400', 'border-transparent');
-                    oneTimeTab.classList.add('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
-                    recurringTab.classList.remove('text-gray-900', 'dark:text-white', 'border-black', 'dark:border-white');
-                    recurringTab.classList.add('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+                    oneTimeTab.classList.remove('text-gray-600', 'dark:text-gray-400', 'border-transparent');
+                    oneTimeTab.classList.add('text-gray-900', 'dark:text-white', 'border-blue-600', 'dark:border-blue-400');
+                    recurringTab.classList.remove('text-gray-900', 'dark:text-white', 'border-blue-600', 'dark:border-blue-400');
+                    recurringTab.classList.add('text-gray-600', 'dark:text-gray-400', 'border-transparent');
                 }
                 
                 this.render();
@@ -683,11 +698,11 @@
                 const pieBtn = document.getElementById('pieChartBtn');
                 
                 if (type === 'bar') {
-                    barBtn.className = 'px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded';
-                    pieBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded';
+                    barBtn.className = 'px-3 py-1 text-sm bg-blue-600 dark:bg-blue-500 text-white rounded font-semibold';
+                    pieBtn.className = 'px-3 py-1 text-sm bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded font-semibold';
                 } else {
-                    pieBtn.className = 'px-3 py-1 text-sm bg-black dark:bg-white text-white dark:text-black rounded';
-                    barBtn.className = 'px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded';
+                    pieBtn.className = 'px-3 py-1 text-sm bg-blue-600 dark:bg-blue-500 text-white rounded font-semibold';
+                    barBtn.className = 'px-3 py-1 text-sm bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded font-semibold';
                 }
                 
                 this.updateChart();
@@ -714,9 +729,9 @@
                             data: data,
                             backgroundColor: this.chartType === 'pie' 
                                 ? ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
-                                : (isDark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'),
-                            borderColor: isDark ? 'rgba(255, 255, 255, 1)' : 'rgba(0, 0, 0, 1)',
-                            borderWidth: 1
+                                : (isDark ? 'rgba(59, 130, 246, 0.8)' : 'rgba(37, 99, 235, 0.8)'),
+                            borderColor: isDark ? 'rgba(147, 197, 253, 1)' : 'rgba(29, 78, 216, 1)',
+                            borderWidth: 2
                         }]
                     },
                     options: {
@@ -730,7 +745,10 @@
                                 display: this.chartType === 'pie',
                                 position: 'right',
                                 labels: {
-                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                    color: isDark ? '#e5e7eb' : '#374151',
+                                    font: {
+                                        weight: 'bold'
+                                    }
                                 }
                             }
                         },
@@ -741,18 +759,24 @@
                                     callback: function(value) {
                                         return '$' + value.toFixed(0);
                                     },
-                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                    color: isDark ? '#e5e7eb' : '#374151',
+                                    font: {
+                                        weight: 'bold'
+                                    }
                                 },
                                 grid: {
-                                    color: isDark ? '#374151' : '#e5e7eb'
+                                    color: isDark ? '#4b5563' : '#d1d5db'
                                 }
                             },
                             x: {
                                 ticks: {
-                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                    color: isDark ? '#e5e7eb' : '#374151',
+                                    font: {
+                                        weight: 'bold'
+                                    }
                                 },
                                 grid: {
-                                    color: isDark ? '#374151' : '#e5e7eb'
+                                    color: isDark ? '#4b5563' : '#d1d5db'
                                 }
                             }
                         } : {}
@@ -768,18 +792,18 @@
                     .slice(0, 5);
                 
                 const topExpensiveHTML = top5.length > 0 ? top5.map((item, index) => `
-                    <div class="flex items-center justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <div class="flex items-center justify-between p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                         <div class="flex items-center gap-2">
-                            <span class="text-lg font-bold text-gray-400 dark:text-gray-500">${index + 1}</span>
+                            <span class="text-lg font-bold text-gray-500 dark:text-gray-400">${index + 1}</span>
                             <span class="text-lg">${this.categoryIcons[item.category] || '📦'}</span>
                             <div>
-                                <div class="font-medium text-gray-900 dark:text-white">${item.name}</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.category}</div>
+                                <div class="font-bold text-gray-900 dark:text-white">${item.name}</div>
+                                <div class="text-xs font-medium text-gray-600 dark:text-gray-400">${item.category}</div>
                             </div>
                         </div>
-                        <span class="font-semibold text-gray-900 dark:text-white">$${item.amount.toFixed(2)}</span>
+                        <span class="font-bold text-gray-900 dark:text-white">$${item.amount.toFixed(2)}</span>
                     </div>
-                `).join('') : '<p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">No items yet</p>';
+                `).join('') : '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4 font-medium">No items yet</p>';
                 
                 document.getElementById('topExpensiveItems').innerHTML = topExpensiveHTML;
 
@@ -806,9 +830,7 @@
                     ? `Based on average of ${oneTimeCount} one-time purchase(s)`
                     : 'No one-time purchase history for prediction';
                 document.getElementById('forecastNote').textContent = note;
-            },
-
-            exportCSV() {
+            },exportCSV() {
                 const headers = ['Name', 'Amount', 'Category', 'Type', 'Day of Month', 'Payment', 'Notes'];
                 const rows = this.items.map(item => [
                     item.name,
@@ -1037,28 +1059,28 @@
                     const isSelected = this.selectedItems.has(item.id);
                     
                     htmlParts.push(`
-                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 hover:border-gray-300 dark:hover:border-gray-600 transition-colors ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700' : ''}">
+                        <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-4 mb-3 hover:border-blue-400 dark:hover:border-blue-500 transition-colors ${isSelected ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-400 dark:border-blue-500' : 'bg-white dark:bg-gray-700/50'}">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-start gap-3 flex-1">
-                                    <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="app.toggleItemSelection(${item.id})" class="mt-1 w-4 h-4 cursor-pointer">
+                                    <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="app.toggleItemSelection(${item.id})" class="mt-1 w-4 h-4 cursor-pointer accent-blue-600">
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2 mb-2">
                                             <span class="text-lg">${this.categoryIcons[item.category] || '📦'}</span>
-                                            <h3 class="font-semibold text-gray-900 dark:text-white">${item.name}</h3>
-                                            <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded">${item.category}</span>
+                                            <h3 class="font-bold text-gray-900 dark:text-white">${item.name}</h3>
+                                            <span class="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded font-semibold">${item.category}</span>
                                         </div>
-                                        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                        <div class="flex items-center gap-4 text-sm text-gray-700 dark:text-gray-300 mb-2 font-medium">
                                             <span class="flex items-center gap-1"><i data-lucide="dollar-sign" class="w-4 h-4"></i>$${item.amount.toFixed(2)}${item.type === 'recurring' ? '/month' : ''}</span>
-                                            ${item.type === 'recurring' ? `<span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i>Day ${item.dayOfMonth}</span><span class="text-gray-400 dark:text-gray-500">$${(item.amount * 12).toFixed(2)}/year</span>` : ''}
+                                            ${item.type === 'recurring' ? `<span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i>Day ${item.dayOfMonth}</span><span class="text-gray-500 dark:text-gray-400">$${(item.amount * 12).toFixed(2)}/year</span>` : ''}
                                             ${item.payment ? `<span class="flex items-center gap-1"><i data-lucide="credit-card" class="w-4 h-4"></i>${item.payment}</span>` : ''}
                                         </div>
-                                        ${item.notes ? `<div class="text-sm text-gray-500 dark:text-gray-400 italic">${item.notes}</div>` : ''}
+                                        ${item.notes ? `<div class="text-sm text-gray-600 dark:text-gray-400 italic font-medium">${item.notes}</div>` : ''}
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button onclick="app.editItem(${item.id})" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-2"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
-                                    <button onclick="app.duplicateItem(${item.id})" class="text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors p-2"><i data-lucide="copy" class="w-5 h-5"></i></button>
-                                    <button onclick="app.deleteItem(${item.id})" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                    <button onclick="app.editItem(${item.id})" class="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors p-2"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
+                                    <button onclick="app.duplicateItem(${item.id})" class="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 transition-colors p-2"><i data-lucide="copy" class="w-5 h-5"></i></button>
+                                    <button onclick="app.deleteItem(${item.id})" class="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1066,9 +1088,9 @@
                 }
 
                 const itemsHTML = htmlParts.length > 0 ? htmlParts.join('') : `
-                    <div class="text-center py-12 text-gray-400 dark:text-gray-500">
+                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
                         <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3"></i>
-                        <p>No ${this.currentTab} items yet</p>
+                        <p class="font-semibold">No ${this.currentTab} items yet</p>
                     </div>
                 `;
 
